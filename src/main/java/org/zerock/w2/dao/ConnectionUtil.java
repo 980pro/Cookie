@@ -5,7 +5,7 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import java.sql.Connection;
 
-public enum ConnectionUtil {
+public enum   ConnectionUtil {
     INSTANCE;
     private HikariDataSource ds;
     ConnectionUtil() {

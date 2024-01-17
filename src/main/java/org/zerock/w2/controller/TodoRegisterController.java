@@ -26,6 +26,7 @@ public class TodoRegisterController extends HttpServlet {
         log.info("/todo/register GET .......");
 
         HttpSession session = req.getSession();
+
         if(session.isNew()) {
             log.info("JSESSIONID 쿠키가 새로 만들어진 사용자");
             resp.sendRedirect("/login");

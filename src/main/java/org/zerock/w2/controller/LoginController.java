@@ -6,10 +6,7 @@ import org.zerock.w2.service.MemberService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -33,12 +30,21 @@ public class LoginController extends HttpServlet {
         String auto = req.getParameter("auto"); // 자동로그인
 
         boolean rememberMe = auto != null && auto.equals("on");
-        if(rememberMe){
-            String uuid = UUID.randomUUID().toString();
-        }
 
         try{
             MemberDTO memberDTO = MemberService.INSTANCE.login(mid, mpw);
+            if(rememberMe){
+                String uuid = UUID.randomUUID().toString();
+
+                MemberService.INSTANCE.updateUuid(mid, uuid);
+                memberDTO.setUuid(uuid);
+
+                Cookie rememberCookie = new Cookie("remember-me", uuid);
+                rememberCookie.setMaxAge(60*60*24);
+                rememberCookie.setPath("/");
+                resp.addCookie(rememberCookie);
+            }
+
             HttpSession session = req. getSession();
             session.setAttribute("loginInfo", memberDTO);
             resp.sendRedirect("/todo/list");
